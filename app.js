@@ -3,13 +3,24 @@ console.log('...booting up');
 require('dotenv').config()
 
 const request = require('request');
+const yargs = require('yargs');
+
+const dates = require('./lib/dates.js');
 
 const apiKey = process.env.SKYSCANNER_KEY;
 
-const url='us/anywhere/anytime/anytime';
-request(`http://partners.api.skyscanner.net/apiservices/browseroutes/v1.0/US/usd/en-US/${url}?apikey=${apiKey}`, function (err, res, body) {
-  if (err) {
-    console.error('error:', err);
-  }
-  console.log(body);
-});
+const argv = yargs.argv;
+var command = argv._[0];
+
+if (command === 'search') {
+  var formattedDates = dates.formatDates(argv.depart, argv.return);
+  const url=`${argv.home}/anywhere/${formattedDates.dep}/${formattedDates.ret}`;
+  request(`http://partners.api.skyscanner.net/apiservices/browseroutes/v1.0/US/usd/en-US/${url}?apikey=${apiKey}`, function (err, res, body) {
+    if (err) {
+      console.error('error:', err);
+    }
+    console.log(body);
+  });
+} else {
+  console.log('You need to provide a command!');
+}

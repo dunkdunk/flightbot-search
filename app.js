@@ -6,7 +6,28 @@ const dates = require('./lib/dates.js');
 const flights = require('./lib/flights.js');
 const locations = require('./lib/locations.js');
 
-const argv = yargs.argv;
+const argv = yargs
+  .command('search', 'Search for flights', {
+    home: {
+      describe: 'Where you are flying from',
+      demand: true,
+      alias: 'h'
+    },
+    depart: {
+      describe: 'When do you want to depart? If left blank, will default to anytime.',
+      alias: 'd'
+    },
+    return: {
+      describe: 'When would you like to return? If left blank, will default to anytime.',
+      alias: 'r'
+    },
+    budget: {
+      describe: 'What is your budget? (in US dollars)',
+      alias: 'b'
+    }
+  })
+  .help()
+  .argv;
 var command = argv._[0];
 
 if (command === 'search') {

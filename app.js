@@ -20,7 +20,7 @@ if (command === 'search') {
         if (err) {
           console.log('There was an error: ', err);
         } else {
-          console.log(results);
+          console.log(JSON.stringify(results, null, 2));
         }
       });
     }

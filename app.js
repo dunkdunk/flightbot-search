@@ -1,26 +1,29 @@
 require('dotenv').config();
 
-const request = require('request');
 const yargs = require('yargs');
 
 const dates = require('./lib/dates.js');
+const flights = require('./lib/flights.js');
 const locations = require('./lib/locations.js');
-
-const apiKey = process.env.SKYSCANNER_KEY;
 
 const argv = yargs.argv;
 var command = argv._[0];
 
 if (command === 'search') {
   locations.findPlace(argv.home, (err, place) => {
-    var formattedDates = dates.formatDates(argv.depart, argv.return);
-    const url=`${place}/anywhere/${formattedDates.dep}/${formattedDates.ret}`;
-    request(`http://partners.api.skyscanner.net/apiservices/browseroutes/v1.0/US/usd/en-US/${url}?apikey=${apiKey}`, function (err, res, body) {
-      if (err) {
-        console.error('error:', err);
-      }
-      console.log(body);
-    });
+    if (err) {
+      console.log('There was an error: ', err);
+    } else {
+      var formattedDates = dates.formatDates(argv.depart, argv.return);
+      const url=`${place}/anywhere/${formattedDates.dep}/${formattedDates.ret}`;
+      flights.browseRoutes(url, (err, results) => {
+        if (err) {
+          console.log('There was an error: ', err);
+        } else {
+          console.log(results);
+        }
+      });
+    }
   });
 } else {
   console.log('You need to provide a command!');

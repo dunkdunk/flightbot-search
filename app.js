@@ -1,10 +1,11 @@
 require('dotenv').config();
 
 const yargs = require('yargs');
+const _ = require('lodash');
 
-const dates = require('./lib/dates.js');
-const flights = require('./lib/flights.js');
-const locations = require('./lib/locations.js');
+const dates = require('./lib/dates');
+const flights = require('./lib/flights');
+const locations = require('./lib/locations');
 
 const argv = yargs
   .command('search', 'Search for flights', {
@@ -41,7 +42,15 @@ if (command === 'search') {
         if (err) {
           console.log('There was an error: ', err);
         } else {
-          console.log(JSON.stringify(results, null, 2));
+          if (argv.budget) {
+            const flights =
+              _.filter(results['Quotes'], function(f) {
+                return f['MinPrice'] < argv.budget;
+              });
+            console.log(flights);
+          } else {
+            console.log(JSON.stringify(results['Quotes'], null, 2));
+          }
         }
       });
     }

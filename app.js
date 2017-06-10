@@ -45,7 +45,7 @@ if (command === 'search') {
           if (argv.budget) {
             const flights =
               _.filter(results['Quotes'], function(f) {
-                return f['MinPrice'] < argv.budget;
+                return f['MinPrice'] <= argv.budget;
               });
             console.log(flights);
           } else {
